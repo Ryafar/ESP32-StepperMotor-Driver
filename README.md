@@ -1,12 +1,41 @@
-# ESP32-C6 FreeRTOS RGB blink (WS2812 one-wire, red)
+# ESP32-C6 FreeRTOS RGB blink + Stepper Motor Control
 
+This project contains a minimal FreeRTOS example for ESP32-C6 with:
+- **RGB LED**: Blinks the on-board addressable RGB LED (WS2812/NeoPixel) in red
+- **Stepper Motor**: Controls a stepper motor via boot button (GPIO9)
 
-This project contains a minimal FreeRTOS example that blinks the on-board addressable RGB LED (WS2812/NeoPixel, one-wire) on an ESP32-C6 in red.
+## Hardware Configuration
 
-By default it uses `GPIO8` and expects a single LED. Change these at the top of `main/main.c`:
-
+### RGB LED (WS2812)
+By default uses `GPIO8`. Change at the top of `main/main.c`:
 - `#define LED_STRIP_GPIO 8`
 - `#define LED_STRIP_LED_NUM 1`
+
+### Stepper Motor
+Default GPIO assignments (configurable in `main/main.c`):
+- **Direction**: `GPIO0` - Controls rotation direction
+- **Enable**: `GPIO1` - Enables/disables motor (active low for most drivers)
+- **Step**: `GPIO2` - Step pulse signal
+- **Button**: `GPIO9` - Boot button (active low, internal pull-up)
+
+**Motor behavior:**
+- Press and hold the boot button to enable and rotate the motor
+- Release the button to stop and disable the motor
+- Default speed: ~1000 steps/second (adjustable via `STEP_DELAY_US`)
+
+### Wiring Example
+For common stepper drivers (A4988, DRV8825, TMC2208, etc.):
+```
+ESP32-C6      Stepper Driver
+--------      --------------
+GPIO0    -->  DIR
+GPIO1    -->  EN (or !EN)
+GPIO2    -->  STEP
+GND      -->  GND
+3.3V     -->  VDD (logic power)
+           
+Driver needs separate motor power supply connected to VMOT/VIN
+```
 
 
 
